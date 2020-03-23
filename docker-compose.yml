@@ -1,7 +1,7 @@
 version: '2'
 services:
   lorouter:
-    build: ./Minitid
+    build: ./Nanotid
     expose:
       - "80"
       - "8888"
