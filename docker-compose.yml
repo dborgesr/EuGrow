@@ -1,6 +1,6 @@
 version: '2'
 services:
-  lorouter:
+  eugrow:
     build: ./Nanotid
     expose:
       - "80"

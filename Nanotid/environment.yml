@@ -1,13 +1,12 @@
 name: env
 channels:
-  - conda-forge
+#  - conda-forge
   - rpi
 dependencies:
 #  - conda-build
   - pip
   - python
   - setuptools
-  - numpy
   - pip:
     - setuptools
     - gnureadline
