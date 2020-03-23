@@ -33,17 +33,17 @@ ENV APT_PACKAGES=" \
 		vim \
 		tk-dev \
     	libpng-dev \
-#		gfortran \
+		gfortran \
 		wget \
 		libncurses-dev \
 		libxml2-dev \
 		ca-certificates \
-#		build-essential \
+		build-essential \
 		libbz2-dev \
 		libc6-dev \
 		libgdbm-dev \
 		libjpeg-dev \
-#	liblapack-dev \
+	liblapack-dev \
 		libncurses-dev \
 		libssl-dev \
 		zlib1g-dev \
@@ -62,10 +62,10 @@ ENV APT_PACKAGES=" \
 #		npm \
 #		cron \
 #        arduino \
-#        g++ \
-#        gcc \
-#        usbutils \
-#        make \
+        g++ \
+        gcc \
+        usbutils \
+        make \
 	sqlite \
 	sqlite3 \
 	libsqlite3-dev \
