@@ -38,7 +38,7 @@ ENV APT_PACKAGES=" \
 		libncurses-dev \
 		libxml2-dev \
 		ca-certificates \
-#		build-essential \
+		build-essential \
 		libbz2-dev \
 		libc6-dev \
 		libgdbm-dev \
