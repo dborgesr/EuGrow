@@ -62,7 +62,6 @@ ENV APT_PACKAGES=" \
 #		nodejs \
 #		npm \
 #		cron \
-        arduino-cli \
 #        g++ \
 #        gcc \
         usbutils \
@@ -99,6 +98,9 @@ RUN curl --silent -s -L https://github.com/jjhelmus/berryconda/releases/download
 	conda clean -tipy && \
 	if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
 ENV PATH=/opt/conda/envs/env/bin/:$PATH	
+
+#Install things for arduino CLI programming
+RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
 
 # Install packages for microscope camera -- Either UV4l or RPI Cam inteface based
 # Install the UV4L PPA
@@ -155,7 +157,8 @@ ENV PATH=/opt/conda/envs/env/bin/:$PATH
 #set bash as default shell
 ENV SHELL=/bin/bash
 #Set bash up to start and activate env environment
-RUN echo "source activate env" > ~/.bashrc
+RUN echo "export PATH=/opt/conda/envs/env/bin/:$PATH > ~/.bashrc" && \
+	echo "source activate env" >> ~/.bashrc
 ENV PATH=/opt/conda/envs/env/bin:$PATH	
 
 #Configure jupyter
