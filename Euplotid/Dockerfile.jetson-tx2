@@ -21,7 +21,8 @@ ENV APT_PACKAGES=" \
 		libzmq3-dev \
 		gfortran \
 		libjpeg-dev \
-		libgfortran3"
+		libgfortran3 \
+		build-essential"
 
 RUN	apt-get update && \
 	apt-get install -y --no-install-recommends $APT_PACKAGES && \
@@ -43,8 +44,8 @@ RUN curl -s -L https://github.com/dborgesr/Euplotid/raw/gh-pages/conda_installer
 	conda install -y -c jetson-tx2 \
 		cmake \
 		numpy \
-#		pandas \
-#		scikit-learn \
+		pandas \
+		scikit-learn \
 		&& \
 	conda clean -tipy && \
 	if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
