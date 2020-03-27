@@ -9,7 +9,8 @@ ENV EUPLO_DEPLOY=false
 ENV JUPYTER_PORT=8888
 ENV EUPLO_ARDUINO=false
 ENV EUPLO_RPICAM=false
-ENV UDEV=1
+#Allow manipulation of usb devices
+ENV UDEV=on
 
 ENV APT_PACKAGES=" \
 		psmisc \
@@ -32,17 +33,17 @@ ENV APT_PACKAGES=" \
 #		libraspberrypi0 \
 		vim \
 		tk-dev \
-    	libpng-dev \
+#    	libpng-dev \
 #		gfortran \
 		wget \
 		libncurses-dev \
 		libxml2-dev \
 		ca-certificates \
 		build-essential \
-		libbz2-dev \
-		libc6-dev \
-		libgdbm-dev \
-		libjpeg-dev \
+#		libbz2-dev \
+#		libc6-dev \
+#		libgdbm-dev \
+#		libjpeg-dev \
 #	liblapack-dev \
 		libncurses-dev \
 		libssl-dev \
@@ -57,14 +58,14 @@ ENV APT_PACKAGES=" \
 		iw \
 		libdbus-1-dev \
 		libexpat-dev \
-		rfkill \
+#		rfkill \
 #		nodejs \
 #		npm \
 #		cron \
-#        arduino \
+        arduino-cli \
 #        g++ \
 #        gcc \
-#        usbutils \
+        usbutils \
 #        make \
 	sqlite \
 	sqlite3 \

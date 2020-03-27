@@ -1,2 +1,2 @@
-FROM balenalib/%%BALENA_ARCH%%-debian
-CMD ["bash"]
+FROM balenalib/%%BALENA_ARCH%%-alpine
+CMD ["ash"]
