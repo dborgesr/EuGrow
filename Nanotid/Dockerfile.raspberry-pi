@@ -1,12 +1,13 @@
-#Euplotid debian minimal deploy image for ARM can be tested on x86
+FROM balenalib/%%BALENA_ARCH%%-debian-python:3.6.8-jessie-build as builder
 
-#Start with builder image to build packages
-FROM balenalib/raspberry-pi-debian-python:3.6.8-jessie-build as builder
-#Test on x86
-#RUN [ "cross-build-start" ]
+#switch on systemd init system in container
+ENV INITSYSTEM on
+
+COPY . /usr/src/app
+WORKDIR /usr/src/app
 
 #Get python, conda, and apt-get/apk package dependencies 
-COPY NanotidDockerImage/requirements.txt /requirements.txt
+COPY /requirements.txt /requirements.txt
 
 ENV APT_PACKAGES=" \
 	software-properties-common \
@@ -22,6 +23,8 @@ ENV APT_PACKAGES=" \
 	unzip \
 	apt-transport-https \
 	ca-certificates \
+	git \
+	wiringpi \
 	"
 	
 # Install few tools using apt-get required to get conda package manager up and running 
@@ -33,17 +36,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   
 RUN pip3 install -r /requirements.txt 
 
-#RUN [ "cross-build-end" ]
+RUN mkdir /var/www \
+	&& cd /var/www \
+	&& git clone --recursive git://github.com/ninjablocks/433Utils.git \
+	&& cd 433Utils/RPi_utils/ \
+	&& make
+	
 
 #Get production image and copy over from builder image
 FROM balenalib/raspberry-pi-debian-python:3.6.8-jessie-run 
-#RUN [ "cross-build-start" ]
 
 COPY --from=builder /usr/local /usr/local
-
-RUN mkdir /app
-WORKDIR /app
-USER root
+COPY --from=builder /var/www /var/www
   
 # Install few tools using apt-get required to get conda package manager up and running 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -53,6 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	dnsmasq \
 	wireless-tools \
 	libsqlite3-0 \
+	wiringpi \
   && apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
@@ -62,7 +67,7 @@ ENV DEVICE_TYPE=raspberry-pi
 
 RUN mkdir -p /usr/src/app && \
 	cd /usr/src/app && \
-	curl -Ls https://github.com/balena-io/wifi-connect/releases/download/v4.2.5/wifi-connect-v4.2.5-linux-armv7hf.tar.gz \
+	curl -Ls https://github.com/balena-io/wifi-connect/releases/download/v4.2.13/wifi-connect-v4.2.13-linux-armv7hf.tar.gz \
     | tar -xvz -C /usr/src/app/
     
 #Define default startup behavior
@@ -72,10 +77,8 @@ ENV EUPLO_WIFI=false
 ENV EUPLO_ARCH=armv6
 ENV EUPLO_OS=debian
 
-COPY ./euplotid/applotid.py ./start.sh /app/
+COPY ./applotid.py ./start.sh /app/
 RUN chmod 755 /app/applotid.py /app/start.sh
-
 EXPOSE 80
 CMD ["bash", "/app/start.sh"]
 
-#RUN [ "cross-build-end" ]
