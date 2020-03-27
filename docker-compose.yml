@@ -1,17 +1,34 @@
 version: '2'
 services:
-  eugrow:
+  nanotid:
     build: ./Nanotid
     expose:
       - "80"
-      - "8888"
+    ports:
+      - "80:80"
+    network_mode: host
     environment:
       - UDEV=1
     restart: always
     privileged: true
-    tty: true
-    network_mode: host
     devices:
       - "/dev:/dev"
     cap_add:
       - SYS_RAWIO
+  minitid:
+    build: ./Minitid
+    expose:
+      - "80"
+      - "8888"
+    ports:
+      - "80:80"
+      - "8888:8888"
+    network_mode: host
+    environment:
+      - UDEV=1
+    restart: always
+    privileged: true
+    devices:
+      - "/dev:/dev"
+    cap_add:
+      - SYS_RAWIO  
