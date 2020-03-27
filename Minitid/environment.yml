@@ -8,7 +8,7 @@ dependencies:
   - python
   - setuptools
   - pip:
-    - numpy
+ #   - numpy
     - setuptools
     - gnureadline
     - adafruit-circuitpython-ssd1306
