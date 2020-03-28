@@ -28,10 +28,10 @@ ENV APT_PACKAGES=" \
 #		libav-tools \
 #		gstreamer1.0-tools \
 		git \
-#		libraspberrypi-bin \
-#		libraspberrypi-dev \
-#		libraspberrypi-doc \
-#		libraspberrypi0 \
+		libraspberrypi-bin \
+		libraspberrypi-dev \
+		libraspberrypi-doc \
+		libraspberrypi0 \
 		vim \
 		tk-dev \
 #    	libpng-dev \
