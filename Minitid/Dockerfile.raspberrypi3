@@ -100,7 +100,7 @@ RUN curl --silent -s -L https://github.com/jjhelmus/berryconda/releases/download
 ENV PATH=/opt/conda/envs/env/bin/:$PATH	
 
 #Install things for arduino CLI programming
-RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+RUN cd /opt/conda/envs/env/ curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | bash
 
 # Install packages for microscope camera -- Either UV4l or RPI Cam inteface based
 # Install the UV4L PPA
