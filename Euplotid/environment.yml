@@ -5,7 +5,7 @@ channels:
 dependencies:
 #  - conda-build
   - pip
-  - python
+  - python=3.6.8
   - setuptools
   - numpy
   - pip:
