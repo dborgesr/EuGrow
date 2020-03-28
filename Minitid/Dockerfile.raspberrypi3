@@ -165,8 +165,8 @@ ENV PATH=/opt/conda/envs/env/bin:$PATH
 RUN jupyter notebook --generate-config --allow-root && \
 	sed -i "/c.NotebookApp.open_browser/c c.NotebookApp.open_browser = False" /root/.jupyter/jupyter_notebook_config.py \
         && sed -i "/c.NotebookApp.ip/c c.NotebookApp.ip = '*'" /root/.jupyter/jupyter_notebook_config.py \
-        && sed -i "/c.NotebookApp.notebook_dir/c c.NotebookApp.notebook_dir = '/root/router'" /root/.jupyter/jupyter_notebook_config.py \
-        && sed -i "/c.NotebookApp.token/c c.NotebookApp.token = 'euplotid'" /root/.jupyter/jupyter_notebook_config.py \
+        && sed -i "/c.NotebookApp.notebook_dir/c c.NotebookApp.notebook_dir = '/root/EuGrow'" /root/.jupyter/jupyter_notebook_config.py \
+        && sed -i "/c.NotebookApp.token/c c.NotebookApp.token = 'EuGrow'" /root/.jupyter/jupyter_notebook_config.py \
         && sed -i "/c.NotebookApp.iopub_data_rate_limit/c c.NotebookApp.iopub_data_rate_limit = 10000000" /root/.jupyter/jupyter_notebook_config.py 
 
 # Install resin-wifi-connect
@@ -183,8 +183,8 @@ RUN cp /usr/share/zoneinfo/America/New_York /etc/localtime
 COPY ./start.sh ./applotid.py /app/
 #RUN cd /root && git clone -b master --single-branch https://github.com/dborgesr/Euplotid.git
 
-RUN mkdir /root/router
-WORKDIR /root/router
+RUN mkdir /root/EuGrow
+WORKDIR /root/EuGrow
 
 EXPOSE 80
 EXPOSE $JUPYTER_PORT
