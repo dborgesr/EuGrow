@@ -31,6 +31,7 @@ ENV APT_PACKAGES=" \
 		libgfortran3 \
 		build-essential \
 		liblapack-dev \
+		libopenblas-base
 		"
 
 RUN	apt-get update && \
