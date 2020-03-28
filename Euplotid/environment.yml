@@ -1,7 +1,7 @@
 name: env
 channels:
   - conda-forge
-  - rpi
+  - jetson-tx2
 dependencies:
 #  - conda-build
   - pip
@@ -11,13 +11,8 @@ dependencies:
   - pip:
     - setuptools
     - gnureadline
-    - adafruit-circuitpython-ssd1306
-    - adafruit-circuitpython-framebuf
-    - adafruit-circuitpython-rfm9x
-    - adafruit-circuitpython-tinylora
     - plotly
     - pandas
-    - rpi-rf
     - dash
     - dash-html-components
     - dash-core-components
@@ -28,3 +23,21 @@ dependencies:
     - gunicorn
     - jupyter
     - jupyterlab
+#    - cmake
+    - networkx
+    - ipywidgets
+    - libopenblas-base
+    - Cython
+#    - biopython
+#    - pyliftover
+#    - python-louvain
+#    - pyyaml
+#    - myvariant
+#    - mygene
+#    - pysam
+#    - scikit-learn
+#    - scipy
+#    - scikit-build
+#    - ninja
+#    - lxml
+#    - cffi

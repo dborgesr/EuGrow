@@ -20,9 +20,11 @@ services:
     expose:
       - "80"
       - "8888"
+      - "8080"
     ports:
       - "80"
       - "8888:8888"
+      - "8080:8080"
     network_mode: host
     environment:
       - UDEV=1
@@ -36,8 +38,10 @@ services:
     build: ./Euplotid
     expose:
       - "8894"
+      - "8895"
     ports:
       - "8894:8894"
+      - "8895:8895"
     network_mode: host
     environment:
       - UDEV=1

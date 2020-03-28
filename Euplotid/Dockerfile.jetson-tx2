@@ -5,6 +5,13 @@ FROM openhorizon/aarch64-tx2-cudabase
 USER root
 WORKDIR /root
 
+#Get Euplotid and define variables
+ENV EUPLO_IMAGE=armtid
+ENV EUPLO_ARDUINO=false
+ENV EUPLO_RPICAM=false
+ENV JUPYTER_PORT=8894
+ENV WEBCAM_PORT=8895
+
 ENV APT_PACKAGES=" \
 		psmisc \
 		dialog \
@@ -22,7 +29,9 @@ ENV APT_PACKAGES=" \
 		gfortran \
 		libjpeg-dev \
 		libgfortran3 \
-		build-essential"
+		build-essential \
+		liblapack-dev \
+		"
 
 RUN	apt-get update && \
 	apt-get install -y --no-install-recommends $APT_PACKAGES && \
@@ -30,60 +39,34 @@ RUN	apt-get update && \
 	apt-get clean && \
 	rm -rf /var/cache/apt
 	
+#Get conda dependencies 
+COPY environment.yml /tmp/environment.yml
+
+#Get arm7 compiled conda and create environment
 RUN curl -s -L https://github.com/dborgesr/Euplotid/raw/gh-pages/conda_installers/JetsonConda-0.1-Linux-aarch64.sh > miniconda.sh && \
-    bash miniconda.sh -b -p /root/conda && \
+    bash miniconda.sh -b -p /opt/conda && \
     rm miniconda.sh && \
-    export PATH=/root/conda/bin:$PATH && \
-	conda config --set show_channel_urls True && \
-    conda config --add channels jetson-tx2 && \
-    conda update conda && \
-    conda update --all --yes && \
-    conda install -y pip \
-	    setuptools \
-		&& \
-	conda install -y -c jetson-tx2 \
-		cmake \
-		numpy \
-		pandas \
-		scikit-learn \
+    export PATH=/opt/conda/bin:$PATH && \
+	conda env create -f /tmp/environment.yml && \
+#    conda update conda && \
+#    conda update --all --yes && \
 		&& \
 	conda clean -tipy && \
 	if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
-ENV PATH=/root/conda/bin:$PATH
+ENV PATH=/opt/conda/envs/env/bin/:$PATH	
 
-RUN apt-get update && apt-get install -y liblapack-dev
-
-RUN pip install --upgrade pip && \
-	pip install --no-cache-dir scikit-learn scikit-build && \
-	pip install --no-cache-dir \
-	setuptools \
-	gnureadline \
-	jupyter \
-	plotly \
-	cffi \
-	lxml \
-    joblib \
-    scikit-build \
-    ninja \
-    nbpresent \
-    networkx \
-    ipywidgets \
-    jupyter_contrib_nbextensions \
-	jupyterlab \
-#   biopython \
-#    pyliftover \
-	scipy \
-	numpy \
-    pandas 
-#  python-louvain \
-#	pyyaml
-#	myvariant \
-#	mygene \
-#	pysam \
- #  && \
-#	pip freeze --local | grep -v '^\-e' | cut -d = -f 1  | xargs -n1 pip install -U
+#set bash as default shell and add activation of environment to bash start
+ENV SHELL=/bin/bash
+#Set bash up to start and activate env environment
+RUN echo "export PATH=/opt/conda/envs/env/bin/:$PATH" > ~/.bashrc && \
+	echo "source activate env" >> ~/.bashrc
 
 #Get pytorch machine learning
+#Get kindly provided built pytorch!
+RUN wget https://nvidia.box.com/shared/static/ncgzus5o23uck9i5oth2n8n06k340l6k.whl -O torch-1.4.0-cp36-cp36m-linux_aarch64.whl \
+	&& pip torch-1.4.0-cp36-cp36m-linux_aarch64.whl
+
+#Build from source (PAINFUL)
 ENV CMAKE_PREFIX_PATH=$CONDA_DIR
 #RUN cd /root && git clone --recursive https://github.com/pytorch/pytorch.git && \
 #	cd pytorch && \
@@ -105,35 +88,25 @@ ENV CMAKE_PREFIX_PATH=$CONDA_DIR
 RUN jupyter notebook --generate-config --allow-root && \
 	sed -i "/c.NotebookApp.open_browser/c c.NotebookApp.open_browser = False" /root/.jupyter/jupyter_notebook_config.py \
         && sed -i "/c.NotebookApp.ip/c c.NotebookApp.ip = '*'" /root/.jupyter/jupyter_notebook_config.py \
-        && sed -i "/c.NotebookApp.notebook_dir/c c.NotebookApp.notebook_dir = '/root/Euplotid'" /root/.jupyter/jupyter_notebook_config.py \
-        && sed -i "/c.NotebookApp.token/c c.NotebookApp.token = 'euplotid'" /root/.jupyter/jupyter_notebook_config.py \
+        && sed -i "/c.NotebookApp.notebook_dir/c c.NotebookApp.notebook_dir = '/root/EuGrow'" /root/.jupyter/jupyter_notebook_config.py \
+        && sed -i "/c.NotebookApp.token/c c.NotebookApp.token = 'EuGrow'" /root/.jupyter/jupyter_notebook_config.py \
         && sed -i "/c.NotebookApp.iopub_data_rate_limit/c c.NotebookApp.iopub_data_rate_limit = 10000000" /root/.jupyter/jupyter_notebook_config.py 
-#        && jupyter nbextension enable --py widgetsnbextension \
- #       && jupyter contrib nbextension install --system \
-#       && jupyter nbextension install nbpresent --py --overwrite --system \
-#		&& jupyter nbextension enable nbpresent --py --system \
-#		&& jupyter serverextension enable nbpresent --py --system 
-
-#Get Euplotid and define variables
-ENV EUPLO_IMAGE=armtid
-ENV EUPLO_ARDUINO=false
-ENV EUPLO_RPICAM=false
-ENV JUPYTER_PORT=8894
 
 #set correct timezone (EST)
 RUN cp /usr/share/zoneinfo/America/New_York /etc/localtime
 #Get startup things
 COPY ./start.sh ./applotid.py /app/
-#RUN cd /root && git clone -b master --single-branch https://github.com/dborgesr/Euplotid.git
+#Get repo to develop on project
+#RUN cd /root && git clone -b master --single-branch https://github.com/dborgesr/EuGrow.git
 
-WORKDIR /root/Euplotid
-#set bash as default shell
-ENV SHELL=/bin/bash
+RUN mkdir /root/EuGrow
+WORKDIR /root/EuGrow
 
 ## Clean up (don't remove cuda libs... used by child containers)
 RUN apt-get -y autoremove && apt-get -y autoclean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	rm -rf /var/cache/apt
 
-EXPOSE 8894
+EXPOSE $JUPYTER_PORT
+EXPOSE $WEBCAM_PORT
 CMD ["bash", "./start.sh"]
