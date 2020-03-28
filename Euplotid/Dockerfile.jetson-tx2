@@ -50,7 +50,6 @@ RUN curl -s -L https://github.com/dborgesr/Euplotid/raw/gh-pages/conda_installer
 	conda env create -f /tmp/environment.yml && \
 #    conda update conda && \
 #    conda update --all --yes && \
-		&& \
 	conda clean -tipy && \
 	if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi
 ENV PATH=/opt/conda/envs/env/bin/:$PATH	
