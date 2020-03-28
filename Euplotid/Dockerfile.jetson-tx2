@@ -64,7 +64,7 @@ RUN echo "export PATH=/opt/conda/envs/env/bin/:$PATH" > ~/.bashrc && \
 #Get pytorch machine learning
 #Get kindly provided built pytorch!
 RUN wget https://nvidia.box.com/shared/static/ncgzus5o23uck9i5oth2n8n06k340l6k.whl -O torch-1.4.0-cp36-cp36m-linux_aarch64.whl \
-	&& pip torch-1.4.0-cp36-cp36m-linux_aarch64.whl
+	&& pip install torch-1.4.0-cp36-cp36m-linux_aarch64.whl
 
 #Build from source (PAINFUL)
 ENV CMAKE_PREFIX_PATH=$CONDA_DIR
