@@ -1,46 +1,4 @@
-// Euplotid arduino code control adapted from: WhiteBox Labs -- Tentacle Shield -- I2C interactive example
-// https://www.whiteboxes.ch/tentacle
-//
-// How to use 4 (or 8 if using 2 Tentacle shields) Atlas Scientivic devices in I2C mode
-// and interact with them via the serial monitor.
-//
-// This code is intended to work on all Arduinos. If using the Arduino Yun, connect
-// to it's serial port. If you want to work with the Yun wirelessly, check out the respective
-// Yun version of this example.
-//
-// USAGE:
-//---------------------------------------------------------------------------------------------
-// - Set all your EZO circuits to I2C before using this sketch.
-//    - You can use the "tentacle-steup.ino" sketch to do so)
-//    - Make sure each circuit has a unique I2C ID set 
-// - Set host serial terminal to 9600 baud
-//
-// - To send a command, send the number of the i2c address, a colon and the command ending with a carriage return.
-//
-// - To issue a command, enter it directly to the console.
-//
-// 102:r<CR>
-// 99:i<CR>
-// 100:c<CR>
-// 99:r<CR>
-// 110:cal,mid,7.00<CR>
-//
-//---------------------------------------------------------------------------------------------
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-//---------------------------------------------------------------------------------------------
+// Picotid code to control Adafruit feather and devices attached
 
 #include <Wire.h>                   // enable I2C.
 
