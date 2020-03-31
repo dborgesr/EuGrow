@@ -49,20 +49,15 @@ if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "nanotid" ] ; t
 	fi
 fi
 #Run jupyter as IDE for bigger images
+if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "armtid" ] ; then
+	jupyter lab --allow-root --port=$JUPYTER_PORT --no-browser --ip=0.0.0.0
+
+fi
 if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "minitid" ] ; then
 	jupyter lab --allow-root --port=$JUPYTER_PORT --no-browser --ip=0.0.0.0
 
 fi
-if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "eulertid" ] ; then
+if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "armtid" ] ; then
 	jupyter lab --allow-root --port=$JUPYTER_PORT --no-browser --ip=0.0.0.0
 
 fi
-if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "euplotid" ] ; then
-	jupyter lab --allow-root --port=$JUPYTER_PORT --no-browser --ip=0.0.0.0
-
-fi
-if [ "${EUPLO_DEPLOY:-}" == "false" ] && [ "${EUPLO_IMAGE:-}" == "megatid" ] ; then
-	jupyter lab --allow-root --port=$JUPYTER_PORT --no-browser --ip=0.0.0.0
-
-fi
-

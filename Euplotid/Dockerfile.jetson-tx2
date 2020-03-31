@@ -1,6 +1,8 @@
 #Euplotid ARM image
 
-FROM openhorizon/aarch64-tx2-cudabase
+#FROM openhorizon/aarch64-tx2-cudabase
+# Start w/ nvidia provided l4t base image w/ CUDA
+FROM nvcr.io/nvidia/l4t-base:r32.3.1
 
 USER root
 WORKDIR /root
@@ -11,6 +13,7 @@ ENV EUPLO_ARDUINO=false
 ENV EUPLO_RPICAM=false
 ENV JUPYTER_PORT=8894
 ENV WEBCAM_PORT=8895
+ENV EUPLO_DEPLOY=false
 
 ENV APT_PACKAGES=" \
 		psmisc \
@@ -32,8 +35,10 @@ ENV APT_PACKAGES=" \
 		build-essential \
 		liblapack-dev \
 		libopenblas-base \
+		openmpi-bin \
 		"
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN	apt-get update && \
 	apt-get install -y --no-install-recommends $APT_PACKAGES && \
  	rm -rf "/var/lib/apt/lists/*" && \
@@ -67,7 +72,7 @@ RUN wget https://nvidia.box.com/shared/static/ncgzus5o23uck9i5oth2n8n06k340l6k.w
 	&& pip install torch-1.4.0-cp36-cp36m-linux_aarch64.whl
 
 #Build from source (PAINFUL)
-ENV CMAKE_PREFIX_PATH=$CONDA_DIR
+#ENV CMAKE_PREFIX_PATH=$CONDA_DIR
 #RUN cd /root && git clone --recursive https://github.com/pytorch/pytorch.git && \
 #	cd pytorch && \
 #	git submodule update --init && \
@@ -102,11 +107,11 @@ COPY ./start.sh ./applotid.py /app/
 RUN mkdir /root/EuGrow
 WORKDIR /root/EuGrow
 
-## Clean up (don't remove cuda libs... used by child containers)
+## Clean up
 RUN apt-get -y autoremove && apt-get -y autoclean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	rm -rf /var/cache/apt
 
 EXPOSE $JUPYTER_PORT
 EXPOSE $WEBCAM_PORT
-CMD ["bash", "./start.sh"]
+CMD ["bash", "/app/start.sh"]
