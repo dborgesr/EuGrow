@@ -51,3 +51,20 @@ services:
       - "/dev:/dev"
     cap_add:
       - SYS_RAWIO  
+  iotid:
+    build: ./IoTid
+    expose:
+      - "8894"
+      - "8895"
+    ports:
+      - "8888:8894"
+      - "8889:8895"
+    network_mode: host
+    environment:
+      - UDEV=1
+    restart: always
+    privileged: true
+    devices:
+      - "/dev:/dev"
+    cap_add:
+      - SYS_RAWIO  

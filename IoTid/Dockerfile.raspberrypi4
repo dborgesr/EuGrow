@@ -1,0 +1,118 @@
+#IoTid image for all IoT needs: OpenBalena and ChirpStack
+FROM balenalib/%%BALENA_ARCH%%-debian:stable-slim
+USER root
+
+ENV APT_PACKAGES=" \
+		build-essential \
+		git \
+		docker.io \
+		libssl-dev \
+		nodejs \
+		npm \
+		software-properties-common \
+		apt-transport-https \
+		ca-certificates \
+		libreadline-dev \
+		zlib1g-dev \
+		libgsl0-dev \
+		wget \
+		bzip2 \
+		bash \
+		mosquitto \
+		mosquitto-clients \
+		redis-server \
+		redis-tools \
+		postgresql \
+		gnupg \
+		dpkg \
+		curl \
+		"
+
+#Set up shell for install
+ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash","-c"]
+ENV BASH_EN=~/.bashrc
+ENV SHELL=/bin/bash
+
+#Get apt packages
+RUN apt-get update && \
+	apt-get install -y --no-install-recommends $APT_PACKAGES && \
+	apt-get clean autoremove --yes && \
+ 	rm -rf "/var/lib/apt/lists/*" "/tmp/*" "/var/tmp/*" && \
+	rm -rf /var/cache/apt && \
+	rm -rf /var/lib/{apt,dpkg,cache,log}
+
+#Get chirpstack 
+ENV CHIRP_PACKAGES=" \
+		dirmngr \
+		chirpstack-gateway-bridge \
+		chirpstack-network-server \
+		chirpstack-application-server \
+		"
+
+
+#Get ChirpStack
+RUN mkdir -p /var/lib/dpkg/updates /var/lib/dpkg/info /var/lib/dpkg/alternatives && \
+	touch /var/lib/dpkg/status /var/lib/dpkg/info/format-new && \
+	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 1CE2AFD36DBCCA00 && \
+	printf "deb https://artifacts.chirpstack.io/packages/3.x/deb stable main" > /etc/apt/sources.list.d/chirpstack.list && \
+	apt-get update && \
+	apt-get install -y --no-install-recommends $CHIRP_PACKAGES && \
+	apt-get clean autoremove --yes && \
+ 	rm -rf "/var/lib/apt/lists/*" "/tmp/*" "/var/tmp/*" && \
+	rm -rf /var/cache/apt && \
+	rm -rf /var/lib/{apt,dpkg,cache,log}
+
+# Install docker-compose
+RUN curl -L https://github.com/docker/compose/releases/download/1.27.4/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && \
+	chmod +x /usr/local/bin/docker-compose && \
+	adduser balena && \
+	usermod -aG sudo balena && \
+	usermod -aG docker balena
+
+#Get openbalena
+ENV TERM=xterm
+RUN git clone https://github.com/balena-io/open-balena.git && \
+	cd ./open-balena/ && \
+	./scripts/quickstart -U dborgesrmit@gmail.com -P iotid -d euplotid.iot
+
+#Get micromamba
+COPY environment.yml /tmp/environment.yml
+RUN wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba --strip-components=1 && \
+	chmod 755 ./micromamba && \
+	./micromamba shell init -s bash -p ~/micromamba && \
+	source ~/.bashrc && \
+	micromamba activate && \
+	micromamba install -y -n base -f /tmp/environment.yml && \
+	rm /root/micromamba/lib/*.a && \
+	rm -rf /root/micromamba/pkgs
+ENV PATH=/root/micromamba/bin/:$PATH
+
+#Configure jupyter
+ENV JUPYTER_PREFIX="/root/"
+RUN jupyter lab --generate-config && \
+	sed -i "/c.ServerApp.open_browser/c c.ServerApp.open_browser = False" "$JUPYTER_PREFIX".jupyter/jupyter_lab_config.py \
+        && sed -i "/c.ServerApp.ip/c c.ServerApp.ip = '*'" "$JUPYTER_PREFIX".jupyter/jupyter_lab_config.py \
+        && sed -i "/c.ServerApp.root_dir/c c.ServerApp.root_dir = '/app'" "$JUPYTER_PREFIX".jupyter/jupyter_lab_config.py \
+        && sed -i "/c.ServerApp.token/c c.ServerApp.token = 'primedtetryonics'" "$JUPYTER_PREFIX".jupyter/jupyter_lab_config.py \
+        && sed -i "/c.ServerApp.iopub_data_rate_limit/c c.ServerApp.iopub_data_rate_limit = 10000000" "$JUPYTER_PREFIX".jupyter/jupyter_lab_config.py
+#Install jupyterlab extensions
+RUN jupyter labextension install jupyterlab-plotly@4.14.3 && \
+	jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget@4.14.3
+
+#Copy over start 
+COPY start.sh applotid.py /app/
+WORKDIR /app
+RUN chmod 755 /app/start.sh /app/applotid.py
+
+#Define default startup behavior
+ENV EUPLO_IMAGE=iotid
+ENV EUPLO_DEPLOY=false
+ENV EUPLO_ARCH=x86
+ENV EUPLO_OS=debian
+ENV JUPYTER_PORT=8894
+ENV DASH_PORT=8895
+
+EXPOSE $JUPYTER_PORT
+EXPOSE $DASH_PORT
+CMD ["bash", "/app/start.sh"]

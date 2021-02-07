@@ -1,0 +1,24 @@
+name: env
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - pip
+  - python=3.8
+  - setuptools
+  - numpy
+  - ipywidgets
+  - plotly
+  - nodejs
+  - readline
+  - pandas
+  - dash
+  - dash-html-components
+  - dash-core-components
+  - dash-renderer
+  - flask
+  - flask-sqlalchemy
+  - gunicorn
+  - jupyter
+  - jupyterlab
+  - h5py
