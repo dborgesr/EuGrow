@@ -1,8 +1,5 @@
 # Logic on container startup depends on a few pre-defined image variables
 
-#Activate default environment
-source activate env
-
 #Check if Arduino enabled, if yes upload new arduino control
 #diff /root/Euplotid/arduino_code/euplouino.ino /data/euplouino.ino || PROGRAMMER=1
 if [ "${EUPLO_ARDUINO:-}" == "true" ] ; then

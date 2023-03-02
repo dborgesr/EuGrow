@@ -1,11 +1,11 @@
 name: env
 channels:
   - conda-forge
-  - jetson-tx2
+  - bioconda
 dependencies:
 #  - conda-build
   - pip
-  - python=3.6.*
+  - python=3.8.*
   - setuptools
   - numpy
   - pip:
@@ -27,6 +27,12 @@ dependencies:
     - networkx
     - ipywidgets
     - Cython
+    - https://developer.download.nvidia.com/compute/redist/jp/v51/pytorch/torch-1.14.0a0+44dac51c.nv23.01-cp38-cp38-linux_aarch64.whl
+#    - visdom \
+#    - tqdm \
+#    - torchnet \
+#    - torchvision \
+#    - tensorboardx 
 #    - biopython
 #    - pyliftover
 #    - python-louvain
